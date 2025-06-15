@@ -11,16 +11,24 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: ["react"],
+      external: ["react", "@emotion/styled", "@emotion/react"],
       output: {
         globals: {
           react: "React",
+          "@emotion/styled": "styled",
+          "@emotion/react": "emotionReact",
         },
       },
     },
     commonjsOptions: {
-      esmExternals: ["react"],
+      esmExternals: ["react", "@emotion/styled", "@emotion/react"],
     },
   },
-  plugins: [react(), dts()],
+  plugins: [
+    react({
+      jsxImportSource: "@emotion/react",
+      plugins: [["@swc/plugin-emotion", {}]],
+    }),
+    dts({ include: ["src/lib"], tsconfigPath: "tsconfig.app.json" }),
+  ],
 });
